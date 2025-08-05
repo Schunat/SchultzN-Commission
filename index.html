@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[Natalie Schultz]">
+    <title>Commission Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(to right, #8EC5FC, #E0C3FC);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .report-container {
+            max-width: 420px;
+            background: #fff;
+            box-shadow: 0 4px 18px rgba(50,50,50,0.10);
+            padding: 36px 40px 30px 40px;
+            margin: 60px auto 0 auto;
+            border-radius: 12px;
+        }
+
+        h2 {
+            color: #4B466A;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+
+        .highlight {
+            color: #5C258D;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function formatCurrency(num) {
+            return num.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        }
+
+        function formatPercent(num) {
+            return num.toFixed(2) + '%';
+        }
+
+        let username = prompt("Please enter your name:");
+        while (!username || !username.trim()) {
+            username = prompt("Please enter your name:");
+        }
+        username = username.trim();
+
+        let subtotal = 0;
+        let input;
+        do {
+            input = prompt("Enter the dollar amount for your sales a single sale at a time. Enter ‘Done’ when you are finished:");
+            if (input === null) { // Cancel pressed
+                input = 'Done';
+            }
+            if (input.trim().toLowerCase() === 'done') {
+                break;
+            }
+            let sale = parseFloat(input.replace(/[^0-9.]/g, ''));
+            if (!isNaN(sale) && sale > 0) {
+                subtotal += sale;
+            } else if (input.trim() && input.trim().toLowerCase() !== 'done') {
+                alert("Please enter a valid dollar and cents amount (e.g., 123.45), or 'Done' to finish.");
+            }
+        } while (true);
+
+        let commissionRate = 0, commission = 0, totalEarnings = 0;
+        // Accurate and efficient range checks
+        if (subtotal <= 0) {
+            commissionRate = 0;
+        } else if (subtotal <= 499.99) {
+            commissionRate = 0.05;
+        } else if (subtotal <= 999.99) {
+            commissionRate = 0.10;
+        } else if (subtotal >= 1000) {
+            commissionRate = 0.15;
+        }
+        if (subtotal > 0) {
+            commission = subtotal * commissionRate;
+            totalEarnings = subtotal + commission;
+        } // If subtotal is zero, all remain at zero
+
+        // OUTPUT (one statement)
+        document.write(`
+                <div class="report-container">
+                    <h2>Hello ${username},</h2>
+                    <p>Here is your <span class="highlight">Weekly Commission Report</span>.</p>
+                    <p>Your sales total is <span class="highlight">${formatCurrency(subtotal)}</span>, so your commission rate is <span class="highlight">${formatPercent(commissionRate * 100)}</span></p>
+                    <p>Your total commission is <span class="highlight">${formatCurrency(commission)}</span>.</p>
+                    <p>Your total earnings are <span class="highlight">${formatCurrency(totalEarnings)}</span></p>
+                    <br>
+
+                </div>
+            `);
+    </script>
+</body>
+</html>
